@@ -13,8 +13,12 @@ int main(int arg_count, char **args)
 
         if(file)
         {
-            i32 last_depth = -1;
             i32 deeper_count = 0;
+            i32 last_sum = -1;
+            i32 depths[3] = {-1, -1, -1};
+            i32 last = 0;
+            i32 sum_count = 0;
+            b32 first_sum = true;
 
             char buffer[512];
             while(fgets(buffer, array_len(buffer), file))
@@ -22,24 +26,45 @@ int main(int arg_count, char **args)
                 if(is_number(buffer))
                 {
                     i32 depth = atoi(buffer);
-                    b32 changed = false;
-                    if(last_depth == -1)
+                    i32 next = (last +1) % 3;
+                    depths[next] = depth;
+
+                    if(depths[last] > -1)
                     {
-                        last_depth = depth;
-                    }
-                    else
-                    {
-                        if(depth > last_depth)
+                        if(depths[last] < depths[next])
                         {
                             ++deeper_count;
+                            last = next;
                         }
-
-                        last_depth = depth;
                     }
+
+                    if(depths[0] != -1 &&
+                       depths[1] != -1 &&
+                       depths[2] != -1)
+                    {
+                        i32 sum = depths[0] + depths[1] + depths[2];
+                        
+                        if(first_sum)
+                        {
+                            last_sum = sum;
+                            first_sum = false;
+                        }
+                        else
+                        {
+                            if(!first_sum && last_sum < sum)
+                            {
+                                sum_count++;
+                            }
+                            last_sum = sum;
+                        }
+                    }
+
+                    last = next;
                 }
             }
 
-            printf("Total number of increases: %d\n", deeper_count);
+            printf("Part1: Total number of depth increases: %d\n", deeper_count);
+            printf("Part2: Total number of sum increases: %d\n", sum_count);
         }
         else
         {
