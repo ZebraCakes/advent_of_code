@@ -20,7 +20,9 @@ int main(int arg_count, char **args)
 
         if(file)
         {
-            v2 location = {};
+            v2 location_p1 = {};
+            v2 location_p2 = {};
+            i32 aim = 0;
 
             char buffer[512];
             while(fgets(buffer, array_len(buffer), file))
@@ -34,15 +36,20 @@ int main(int arg_count, char **args)
                         i32 move = atoi(dist.str);
                         if(strncmp(cmd.str, "forward", cmd.length) == 0)
                         {
-                            location.x += move;
+                            location_p1.x += move;
+
+                            location_p2.y += aim*move;
+                            location_p2.x += move;
                         }
                         else if(strncmp(cmd.str, "up", cmd.length) == 0)
                         {
-                            location.y -= move;
+                            location_p1.y -= move;
+                            aim -= move;
                         }
                         else if(strncmp(cmd.str, "down", cmd.length) == 0)
                         {
-                            location.y += move;
+                            location_p1.y += move;
+                            aim += move;
                         }
                     }
                     else
@@ -56,7 +63,8 @@ int main(int arg_count, char **args)
                 }
             }
 
-            printf("(%d, %d): %d\n", location.x, location.y, location.x*location.y);
+            printf("(%d, %d): %d\n", location_p1.x, location_p1.y, location_p1.x*location_p1.y);
+            printf("(%d, %d): %d\n", location_p2.x, location_p2.y, location_p2.x*location_p2.y);
         }
         else
         {
