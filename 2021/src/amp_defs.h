@@ -41,3 +41,38 @@ b32 is_number(char *num)
         }
     }
 }
+
+union v2
+{
+    struct
+    {
+        i32 x;
+        i32 y;
+    };
+
+    i32 e[2];
+};
+
+struct token
+{
+    char *str;
+    i32 length;
+};
+
+// This is hacky af and if I cared I'd make it more robust, 
+// but for now it'll do
+token get_next_token(char *str)
+{
+    token result = {};
+
+    char *c = str;
+    while(*c != ' ' && *c != 0 && *c != '\n')
+    {
+        ++c;
+    }
+
+    result.str = str;
+    result.length = c - str;
+
+    return result;
+}
