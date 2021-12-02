@@ -4,13 +4,6 @@
 
 #include "amp_defs.h"
 
-enum commands
-{
-    FORWARD,
-    DOWN,
-    UP,
-};
-
 int main(int arg_count, char **args)
 {
     int result = 0;
