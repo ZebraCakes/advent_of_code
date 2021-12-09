@@ -8,8 +8,9 @@ i32 stride = 5;
 
 struct board
 {
-    int data[25];
+    i32 data[25];
     b32 hits[25];
+    i32 winning_draw;
 
     board *next;
 };
@@ -128,22 +129,38 @@ process_board(board *candidate, i32 draw)
 }
 
 board*
-process_boards(board *head, i32 draw)
+process_boards(board **head, board **winners, i32 draw)
 {
-    board *winners = nullptr;
-    board *current = head;
+    board *current = *head;
+    board *prev = nullptr;
 
     while(current)
     {
         if(process_board(current, draw))
         {
-            push_winner(&winners, current);
+            current->winning_draw = draw;
+            push_winner(winners, current);
+
+            if(current == *head)
+            {
+                *head = current->next;
+                free(current);
+                current = *head;
+            }
+
+            else if(prev != nullptr)
+            {
+                prev->next = current->next;
+                free(current);
+                current = prev->next;
+            }
         }
-
-        current = current->next;
+        else
+        {
+            prev = current;
+            current = current->next;
+        }
     }
-
-    return winners;
 }
 
 i32
@@ -214,29 +231,21 @@ int main(int arg_count, char **args)
                 }
             }
 
+            board *winners = nullptr;
             for(i32 i = 0;
-                    i < input_count;
+                    i < input_count && head;
                     ++i)
             {
-                printf("ROUND %d(%d): ", i, inputs[i]);
+                process_boards(&head, &winners, inputs[i]);
+            }
 
-                board *winners = process_boards(head, inputs[i]);
-                if(winners)
-                {
-                    printf("Winners!\n");
-                    board *cur = winners;
+            printf("Winners:\n");
+            board *cur = winners;
 
-                    while(cur)
-                    {
-                        printf("\n SCORE: %d\n\n", calculate_score(cur, inputs[i]));
-                        cur = cur->next;
-                    }
-                    break;
-                }
-                else
-                {
-                    printf("No Winner :(\n\n");
-                }
+            while(cur)
+            {
+                printf("\tSCORE: %d\n", calculate_score(cur, cur->winning_draw));
+                cur = cur->next;
             }
         }
         else
