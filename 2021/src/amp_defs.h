@@ -41,6 +41,8 @@ enum token_type
     TOKEN_NAME = 0x3,
 
     TOKEN_COMMA = 0x4,
+    TOKEN_MINUS = 0x5,
+    TOKEN_RIGHT_ARROW = 0x6,
 };
 
 struct token
@@ -103,6 +105,17 @@ token get_next_token(char *str)
         result.type = TOKEN_COMMA;
         result.length = 1;
     }
+    else if(*c == '-')
+    {
+        result.type = TOKEN_MINUS;
+        result.length = 1;
+    }
+    else if(*c == '>')
+    {
+        result.type = TOKEN_RIGHT_ARROW;
+        result.length = 1;
+    }
+
     else if(is_alpha(c))
     {
         result.type = TOKEN_NAME;
