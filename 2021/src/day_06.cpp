@@ -4,42 +4,16 @@
 
 #include "amp_defs.h"
 
-struct aquarium
-{
-    i8 *fish;
-    u64 count;
-    u64 capacity;
-};
-
-void
-push_fish(aquarium *aq, i8 timer)
-{
-    assert(aq->count < aq->capacity);
-
-    aq->fish[aq->count++] = timer;
-    if(aq->count == aq->capacity)
-    {
-        i8 *fish = (i8*)malloc(sizeof(i8)*aq->capacity*2);
-        memcpy(fish, aq->fish, aq->capacity);
-        free(aq->fish);
-        aq->fish = fish;
-        aq->capacity *= 2;
-    }
-}
-
 int main(int arg_count, char **args)
 {
     int result = 0;
-    if(arg_count > 1)
+    if(arg_count > 2)
     {
         FILE *file = fopen(args[1], "r");
 
         if(file)
         {
-            aquarium aq;
-            aq.capacity = kilobytes(64);
-            aq.fish = (i8*)malloc(sizeof(i8)*aq.capacity);
-            aq.count = 0;
+            u64 fish[9] = {};
             
             char buffer[512];
             while(fgets(buffer, array_len(buffer), file))
@@ -52,35 +26,33 @@ int main(int arg_count, char **args)
                 {
                     if(tok.type == TOKEN_NUMBER)
                     {
-                        push_fish(&aq, atoi(tok.at));
+                        fish[atoi(tok.at)]++;
                     }
 
                     tok = get_next_token(&tok);
                 }
             }
 
-            i32 days = 80;
+            i32 days = atoi(args[2]);
 
             for(i32 day = 0;
                     day < days;
                     ++day)
             {
-                for(i32 i = 0;
-                        i < aq.count;
-                        ++i)
-                {
-                    i8 *fish = aq.fish + i;
-                    --(*fish);
-
-                    if(*fish < 0)
-                    {
-                        *fish = 6;
-                        push_fish(&aq, 9);
-                    }
-                }
+                u64 new_fish[9] = {fish[1], fish[2], fish[3], 
+                                   fish[4], fish[5], fish[6],
+                                   fish[0] + fish[7], fish[8], fish[0]};
+                memcpy(fish, new_fish, 9*sizeof(u64));
             }
 
-            printf("Total Lantern Fish: %d\n", aq.count);
+            u64 count = 0;
+            for(i32 i = 0;
+                    i < 9;
+                    ++i)
+            {
+                count += fish[i];
+            }
+            printf("Total Lantern Fish: %llu\n", count);
         }
         else
         {
