@@ -21,6 +21,11 @@ typedef i32 b32;
 
 #define assert(expr) if(!(expr)){*(int*)0 = 0;}
 
+#define kilobytes(n) ((n)*1024)
+#define megabytes(n) (kilobytes(n)*1024)
+#define gigabytes(n) (megabytes(n)*1024)
+
+
 union v2
 {
     struct
