@@ -58,7 +58,7 @@ int main(int arg_count, char **args)
                 v2 slope = {(end.x > start.x) ? 1 : ((end.x != start.x) ? -1 : 0), 
                             (end.y > start.y) ? 1 : ((end.y != start.y) ? -1 : 0)};
 
-                if(start.x == end.x)
+                if(slope.x == 0)
                 {
                     i32 x = start.x;
                     i32 y_start = start.y < end.y ? start.y : end.y;
@@ -71,7 +71,7 @@ int main(int arg_count, char **args)
                         tiles[y*stride + x]++; 
                     }
                 }
-                else if(start.y == end.y)
+                else if(slope.y == 0)
                 {
                     i32 y = start.y;
                     i32 x_start = start.x < end.x ? start.x : end.x;
@@ -85,8 +85,26 @@ int main(int arg_count, char **args)
                 }
                 else
                 {
-                }
+                    if(start.x > end.x)
+                    {
+                        v2 temp = start;
+                        start = end;
+                        end = temp;
+                        slope.x = (end.x > start.x) ? 1 : ((end.x != start.x) ? -1 : 0); 
+                        slope.y = (end.y > start.y) ? 1 : ((end.y != start.y) ? -1 : 0);
+                    }
 
+                    i32 x = start.x;
+                    i32 y_dir = start.y > end.y ? -1 : 1;
+
+                    for(i32 y = start.y;
+                            x <= end.x;
+                            y += slope.y)
+                    {
+                        tiles[y*stride + x]++;
+                        ++x;
+                    }
+                }
             }
 
             u16 sum = 0;
@@ -100,7 +118,7 @@ int main(int arg_count, char **args)
                 }
             }
 
-            printf("Overlaps > 2: %d\n", sum);
+            printf("\nOverlaps > 2: %d\n", sum);
         }
         else
         {
