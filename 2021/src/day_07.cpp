@@ -109,6 +109,45 @@ int main(int arg_count, char** args)
             }
 
             printf("\nMin: %d\nMax: %d\n", arm.min, arm.max);
+            printf("\n\n==========================\n\tPART 1\n==========================\n");
+            printf("Min cost: %lld Min pos: %d\n", min, min_pos);
+
+            for (u32 i = 0;
+                i < window;
+                ++i)
+            {
+                costs[i] = 0;
+            }
+
+            for (u32 pos = arm.min;
+                pos <= arm.max;
+                ++pos)
+            {
+                for (u32 j = 0;
+                    j < arm.count;
+                    ++j)
+                {
+                    u32 n = abs(i32(arm.ships[j] - pos));
+                    costs[pos - offset] += (n*(n+1)/2);
+                }
+            }
+
+
+            min = UINT64_MAX;
+            min_pos = 0;
+
+            for (u32 i = 0;
+                i < window;
+                ++i)
+            {
+                if (costs[i] < min)
+                {
+                    min_pos = i;
+                    min = costs[i];
+                }
+            }
+
+            printf("\n\n==========================\n\tPART 2\n==========================\n");
             printf("Min cost: %lld Min pos: %d\n", min, min_pos);
         }
         else
