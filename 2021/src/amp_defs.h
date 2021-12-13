@@ -48,6 +48,7 @@ enum token_type
     TOKEN_COMMA = 0x4,
     TOKEN_MINUS = 0x5,
     TOKEN_RIGHT_ARROW = 0x6,
+    TOKEN_PIPE = 0x7,
 };
 
 struct token
@@ -56,6 +57,14 @@ struct token
     i32 length;
 
     token_type type;
+};
+
+struct token_collection
+{
+    token* tokens;
+
+    u32 size;
+    u32 capacity;
 };
 
 inline char*
@@ -118,6 +127,11 @@ token get_next_token(char *str)
     else if(*c == '>')
     {
         result.type = TOKEN_RIGHT_ARROW;
+        result.length = 1;
+    }
+    else if (*c == '|')
+    {
+        result.type = TOKEN_PIPE;
         result.length = 1;
     }
 
