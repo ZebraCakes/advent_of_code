@@ -48,6 +48,13 @@ enum token_type
     TOKEN_COMMA = 0x4,
     TOKEN_MINUS = 0x5,
     TOKEN_RIGHT_ARROW = 0x6,
+    TOKEN_LEFT_ARROW = 0x7,
+    TOKEN_RIGHT_SQUARE_BRACKET = 0x8,
+    TOKEN_LEFT_SQUARE_BRACKET = 0x9,
+    TOKEN_RIGHT_BRACKET = 0xA,
+    TOKEN_LEFT_BRACKET = 0xB,
+    TOKEN_OPEN_PAREN = 0xC,
+    TOKEN_CLOSE_PAREN = 0xD,
     TOKEN_PIPE = 0x7,
 };
 
@@ -124,9 +131,44 @@ token get_next_token(char *str)
         result.type = TOKEN_MINUS;
         result.length = 1;
     }
+    else if(*c == '<')
+    {
+        result.type = TOKEN_LEFT_ARROW;
+        result.length = 1;
+    }
     else if(*c == '>')
     {
         result.type = TOKEN_RIGHT_ARROW;
+        result.length = 1;
+    }
+    else if(*c == '[')
+    {
+        result.type = TOKEN_LEFT_SQUARE_BRACKET;
+        result.length = 1;
+    }
+    else if(*c == ']')
+    {
+        result.type = TOKEN_RIGHT_SQUARE_BRACKET;
+        result.length = 1;
+    }
+    else if (*c == '{')
+    {
+        result.type = TOKEN_LEFT_BRACKET;
+        result.length = 1;
+    }
+    else if (*c == '}')
+    {
+        result.type = TOKEN_RIGHT_BRACKET;
+        result.length = 1;
+    }
+    else if(*c == '(')
+    {
+        result.type = TOKEN_OPEN_PAREN;
+        result.length = 1;
+    }
+    else if(*c == ')')
+    {
+        result.type = TOKEN_CLOSE_PAREN;
         result.length = 1;
     }
     else if (*c == '|')
