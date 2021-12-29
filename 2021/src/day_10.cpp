@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <algorithm>
+#include <vector>
+
 #include "amp_defs.h"
 
 int main(int arg_count, char** args)
@@ -13,12 +16,19 @@ int main(int arg_count, char** args)
 
         if (file)
         {
+            char incomplete[100][4096];
             char buffer[4096];
-            u32 score = 0;
+            u64 score = 0;
+
+            std::vector<u64> scores;
+            scores.reserve(128);
+
+            u64 next_incomplete = 0;
             while (fgets(buffer, array_len(buffer), file))
             {
+                u64 sum = 0;
                 token tokens[256] = {};
-                u16 next_token_index = 0;
+                u64 next_token_index = 0;
 
                 token tok = get_next_token(buffer);
 
@@ -38,7 +48,7 @@ int main(int arg_count, char** args)
                     {
                         if (tokens[next_token_index-1].type != TOKEN_LEFT_ARROW)
                         {
-                            score += 25137;
+                            sum += 25137;
                         }
 
                         --next_token_index;
@@ -48,7 +58,7 @@ int main(int arg_count, char** args)
                     {
                         if (tokens[next_token_index-1].type != TOKEN_LEFT_SQUARE_BRACKET)
                         {
-                            score += 57;
+                            sum += 57;
                         }
                         
                         --next_token_index;
@@ -58,7 +68,7 @@ int main(int arg_count, char** args)
                     {
                         if (tokens[next_token_index-1].type != TOKEN_LEFT_BRACKET)
                         {
-                            score += 1197;
+                            sum += 1197;
                         }
                         
                         --next_token_index;
@@ -68,7 +78,7 @@ int main(int arg_count, char** args)
                     {
                         if (tokens[next_token_index-1].type != TOKEN_OPEN_PAREN)
                         {
-                            score += 3;
+                            sum += 3;
                         }
                         
                         --next_token_index;
@@ -76,9 +86,57 @@ int main(int arg_count, char** args)
 
                     tok = get_next_token(&tok);
                 }
+
+                if (sum > 0)
+                {
+                    score += sum;
+                }
+
+                else
+                {
+                    --next_token_index;
+                    u64 sum = 0;
+                    while (next_token_index < 0xFFFF)
+                    {
+                        u64 points = 0;
+
+                        switch (tokens[next_token_index--].type)
+                        {
+                            case TOKEN_OPEN_PAREN:
+                            {
+                                printf(")");
+                                points = 1;
+                            } break;
+                            case TOKEN_LEFT_SQUARE_BRACKET:
+                            {
+                                printf("]");
+                                points = 2;
+                            } break;
+                            case TOKEN_LEFT_BRACKET:
+                            {
+                                printf("}");
+                                points = 3;
+                            } break;
+                            case TOKEN_LEFT_ARROW:
+                            {
+                                printf(">");
+                                points = 4;
+                            } break;
+                        }
+
+                        sum = sum*5 + points;
+                    }
+
+                    printf("\nline \"%s\": %lu\n", buffer, sum);
+                    scores.push_back(sum);
+                }
+
             }
 
-            printf("Score: %d\n", score);
+            std::sort(scores.begin(), scores.end());
+
+            printf("Error Score: %d\n", score);
+            printf("Unfinished Mid Score: %lu\n", scores[scores.size() / 2]);
         }
     }
 
