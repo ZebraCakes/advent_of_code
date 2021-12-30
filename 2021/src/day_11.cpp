@@ -73,10 +73,11 @@ int main(int arg_count, char** args)
             }
 
             u64 flash_count = 0;
-            for(u16 step = 0;
-                step < 100;
-                ++step)
+            u64 step = 0;
+            for(;;)
             {
+                ++step;
+                u64 flash_before = flash_count;
                 for (int y = 0;
                      y < 10;
                      ++y)
@@ -124,9 +125,11 @@ int main(int arg_count, char** args)
                     octopi[i].visited = false;
                 }
                 //printf("\n");
+                if(flash_count - flash_before == 100)
+                    break;
             }
 
-            printf("Flash count: %llu\n", flash_count);
+            printf("Flash count: %llu\n", step);
         }
     }
     
