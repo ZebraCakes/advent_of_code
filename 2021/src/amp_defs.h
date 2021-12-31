@@ -26,6 +26,8 @@ typedef i32 b32;
 #define gigabytes(n) (megabytes(n)*1024)
 
 
+#define max(a, b) ( (a) > (b) ? (a) : (b) )
+
 union v2
 {
     struct
@@ -55,7 +57,9 @@ enum token_type
     TOKEN_LEFT_BRACKET = 0xB,
     TOKEN_OPEN_PAREN = 0xC,
     TOKEN_CLOSE_PAREN = 0xD,
-    TOKEN_PIPE = 0x7,
+    TOKEN_PIPE = 0xE,
+    TOKEN_EQUALS = 0xF,
+
 };
 
 struct token
@@ -174,6 +178,11 @@ token get_next_token(char *str)
     else if (*c == '|')
     {
         result.type = TOKEN_PIPE;
+        result.length = 1;
+    }
+    else if (*c == '=')
+    {
+        result.type = TOKEN_EQUALS;
         result.length = 1;
     }
 
