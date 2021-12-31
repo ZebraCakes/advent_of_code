@@ -172,16 +172,44 @@ int main(int arg_count, char** args)
                         }
                     }
 
-                    height = y_coord - 1;
+                    height = y_coord;
                 }
                 else
                 {
                     assert(false);
                 }
                 printf("Visible dots: %d\n", dot_count);
-                break;
             }
 
+            char *display = new char[height*width];
+
+            for(u32 i = 0;
+                i < width*height;
+                ++i)
+            {
+                display[i] = '.';
+            }
+
+            for(u32 i = 0;
+                i < dot_count;
+                ++i)
+            {
+                v2 *dot = dots + i;
+                display[dot->y*width + dot->x] = '#';
+            }
+
+            for(u32 y = 0;
+                y < height;
+                ++y)
+            {
+                for(u32 x = 0;
+                    x < width;
+                    ++x)
+                {
+                    printf("%c", display[y*width + x]);
+                }
+                printf("\n");
+            }
 
         }
     }
