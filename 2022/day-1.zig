@@ -48,8 +48,9 @@ pub fn processCalories(file_name: []const u8) anyerror!CalorieCounts {
 pub fn main() anyerror!void {
     const counts = try processCalories("day-1-input.txt");
 
-    std.debug.print("Highest calorie count: {d}\n", .{counts.max_calorie_count});
-    std.debug.print("Sum of top three counts: {d}\n", .{counts.top_3_calorie_sum});
+    const stdout = std.io.getStdOut().writer();
+    try stdout.print("Highest calorie count: {d}\n", .{counts.max_calorie_count});
+    try stdout.print("Sum of top three counts: {d}\n", .{counts.top_3_calorie_sum});
 }
 
 test "test_results" {
