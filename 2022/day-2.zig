@@ -39,9 +39,6 @@ pub fn main() anyerror!void {
 test "test_results" {
     const scores = try processScore("day-2-input.txt");
 
-    std.debug.print("fake score: {}\n", .{scores.fake_score});
-    std.debug.print("real score: {}\n", .{scores.real_score});
-
     try std.testing.expect(scores.fake_score == 15523);
     try std.testing.expect(scores.real_score == 15702);
 }
